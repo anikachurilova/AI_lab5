@@ -1,0 +1,66 @@
+rooms
+R1;25
+R2;45
+R3;15
+R4;50
+R5;45
+R6;90
+periodTime
+MT_MN_1;Monday 10:00 - 11:00
+MT_MN_2;Monday 11:00 - 12:00
+MT_MN_3;Monday 12:00 - 13:00
+MT_MN_4;Monday 13:00 - 14:00
+MT_MN_5;Monday 14:00 - 15:00
+MT_MN_6;Monday 15:00 - 16:00
+MT_TU_1;Tuesday 10:00 - 11:00
+MT_TU_2;Tuesday 11:00 - 12:00
+MT_TU_3;Tuesday 12:00 - 13:00
+MT_TU_4;Tuesday 13:00 - 14:00
+MT_TU_5;Tuesday 14:00 - 15:00
+MT_TU_6;Tuesday 15:00 - 16:00
+MT_WD_1;Wednesday 10:00 - 11:00
+MT_WD_2;Wednesday 11:00 - 12:00
+MT_WD_3;Wednesday 12:00 - 13:00
+MT_WD_4;Wednesday 13:00 - 14:00
+MT_WD_5;Wednesday 14:00 - 15:00
+MT_WD_6;Wednesday 15:00 - 16:00
+MT_TH_1;Thursday 10:00 - 11:00
+MT_TH_2;Thursday 11:00 - 12:00
+MT_TH_3;Thursday 12:00 - 13:00
+MT_TH_4;Thursday 13:00 - 14:00
+MT_TH_5;Thursday 14:00 - 15:00
+MT_TH_6;Thursday 15:00 - 16:00
+MT_FR_1;Friday 10:00 - 11:00
+MT_FR_2;Friday 11:00 - 12:00
+MT_FR_3;Friday 12:00 - 13:00
+MT_FR_4;Friday 13:00 - 14:00
+MT_FR_5;Friday 14:00 - 15:00
+MT_FR_6;Friday 15:00 - 16:00
+teachers
+01;Dr. James Web
+02;Mr. Mike Brown
+03;Dr. Steve Day
+04;Mrs. Jane Doe
+05;Mr. Rick Kell
+06;Mrs. Vicky Bell
+07;Ms. Hailey Bobbi
+08;Dr. Poul Wes
+09;Mr. James Pew
+subjects
+101;BD;01;01;02
+102;Java;01;02;03
+103;Cyber security;01;02
+104;Algebra;03;03;04
+105;APPRP;04;04
+106;MOOP;01;03
+107;Haskell;02;04
+108;Biology;07;07
+109;English;05;07
+110;Sport;06;06
+111;Medicine;08;07
+112;Java EE;09;01;09
+groups
+CS;101;103;109;110;112;111
+HISTORY;102;104;105;110;111
+PHILOSOPHY;106;107;108;110;112;111
+end
