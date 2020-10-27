@@ -3,7 +3,7 @@ import java.util.*;
 public class CSP {
 
     private List<Slot> allSlots = new ArrayList<>();
-    private final Stack<itemOfScheduleAndDeleted> stack;
+    private final Stack<SlotsAndConflicts> stack;
 
     public CSP(List<Slot> slot) {
         this.allSlots = makingAllVariantsForBlocks();
@@ -20,23 +20,23 @@ public class CSP {
     }
 
     private Schedule computing() {
-        if (stack.size() == blocks.size()) {
+        if (stack.size() == allSlots.size()) {
 
             return makeScheduleFromStack();
         }
-        Block followingBlock = followingBlock();
+        Slot sl = nextSlot();
 
-        if (followingBlock != null)
-            return takingFollowingBlock(followingBlock);
+        if (sl != null)
+            return takingFollowingBlock(sl);
         else
             return null;
 
     }
 
-    private Schedule takingFollowingBlock(Block followingBlock) {
-        for (WhereWhen followingWhereWhen : getAllPossibleWhereWhen(followingBlock)) {
+    private Schedule takingFollowingBlock(Slot nextSLot) {
+        for (Slot nextSlots : getAllPossibleSlots(nextSLot)) {
 
-            pushItemOfScheduleAndDeleted(followingBlock, followingWhereWhen);
+            pushItemOfScheduleAndDeleted(nextSLot, nextSlots);
             Schedule result = computing();
             if (result != null) {
                 return result;
@@ -47,7 +47,7 @@ public class CSP {
         return null;
     }
 
-    private void pushItemOfScheduleAndDeleted(Block block, WhereWhen whereWhen) {
+    private void pushItemOfScheduleAndDeleted(Slot block, Slot whereWhen) {
 
         Set<Slot> unnecessary = new HashSet<>();
 
@@ -120,7 +120,6 @@ public class CSP {
         Set<WhereWhen> whereWhens = allVariants.get(block);
         return new ArrayList<>(whereWhens);
     }
-
     private Map<Block, Set<WhereWhen>> makingAllVariantsForBlocks() {
         Map<Block, Set<WhereWhen>> answer = new HashMap<>();
 
@@ -148,4 +147,3 @@ public class CSP {
         return new Schedule(itemOfSchedules);
     }
 }
-
