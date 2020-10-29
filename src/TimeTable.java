@@ -112,4 +112,8 @@ public class TimeTable {
         }
         return answer + "                               Error amounts:"+ mistakes;
     }
+
+    public List<Slot> getReadySlots() {
+        return readySlots;
+    }
 }

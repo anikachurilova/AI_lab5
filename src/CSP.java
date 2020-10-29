@@ -85,7 +85,7 @@ public class CSP {
         return result;
     }
 
-    public void running() {
+    public TimeTable running() {
 //System.out.println(stack.size());
         TimeTable timeTable = makeCalculations();
         if (timeTable == null) {
@@ -93,6 +93,7 @@ public class CSP {
         } else {
             System.out.println(timeTable);
         }
+        return timeTable;
     }
 
     private TimeTable makeCalculations() {
