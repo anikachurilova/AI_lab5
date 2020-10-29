@@ -19,6 +19,8 @@ public class Output {
 
         List<Slot> slots = res.getReadySlots();
 
+        System.out.println(input.getPeriodTimes().size());
+
         for(int i = 0; i < input.getGroups().size(); i++){
             StudentGroup currGroup = input.getGroups().get(i);
             System.out.println("GROUP: "+currGroup.getName());
