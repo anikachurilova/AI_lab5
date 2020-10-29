@@ -8,8 +8,8 @@ public class CSP {
     private final ArrayList<Subject> subjectsFromInput;
     private final ArrayList<StudentGroup> groupsFromInput;
     private final ArrayList<Slot> allVar;
-    private final ArrayList<Slot> blocks;
-    private final ArrayList<Slot> wherewhen;
+    private final ArrayList<Slot> groupsSubjectsTeachers;
+    private final ArrayList<Slot> placeTime;
     private final Stack<SlotsAndConflicts> stack;
 
     public CSP(ArrayList<PeriodTime> periodTimeFromInput, ArrayList<Room> roomsFromInput, ArrayList<Teacher> teachersFromInput, ArrayList<Subject> subjectsFromInput, ArrayList<StudentGroup> groupsFromInput) {
@@ -18,8 +18,8 @@ public class CSP {
         this.teachersFromInput = teachersFromInput;
         this.subjectsFromInput = subjectsFromInput;
         this.groupsFromInput = groupsFromInput;
-        this.wherewhen = createWhereWhen();
-        this.blocks = createBlocks();
+        this.placeTime = createWhereWhen();
+        this.groupsSubjectsTeachers = createBlocks();
         this.allVar = createAllVariants();
         this.stack = new Stack<>();
     }
@@ -68,13 +68,13 @@ public class CSP {
     private ArrayList<Slot> createAllVariants() {
         ArrayList<Slot> result = new ArrayList<>();
 
-        for (int i = 0; i < blocks.size(); i++) {
-            for (int j = 0; j < wherewhen.size(); j++) {
-                if (blocks.get(i).getTypeLesson().equals("L") && (wherewhen.get(j).getRoom().capacity <= 15)) {
+        for (int i = 0; i < groupsSubjectsTeachers.size(); i++) {
+            for (int j = 0; j < placeTime.size(); j++) {
+                if (groupsSubjectsTeachers.get(i).getTypeLesson().equals("L") && (placeTime.get(j).getRoom().capacity <= 15)) {
                     continue;
                 }
-                Slot s = blocks.get(i);
-                Slot ww = wherewhen.get(j);
+                Slot s = groupsSubjectsTeachers.get(i);
+                Slot ww = placeTime.get(j);
                 result.add(new Slot(s.getGroup(), s.getSubject(), s.getTeacher(), s.getTypeLesson(), ww.getPeriodTime(), ww.getRoom()));
             }
         }
@@ -85,42 +85,53 @@ public class CSP {
         return result;
     }
 
-    public void startCSP() {
+    public void running() {
 //System.out.println(stack.size());
-        Schedule schedule = computing();
-        if (schedule == null) {
-            System.out.println("CANT FIND ANSWER");
+        TimeTable timeTable = makeCalculations();
+        if (timeTable == null) {
+            System.out.println("There is no possible timetable:(");
         } else {
-            System.out.println(schedule);
+            System.out.println(timeTable);
         }
     }
 
-    private Schedule computing() {
-        if (stack.size() == blocks.size()) {
+    private TimeTable makeCalculations() {
+        if (stack.size() == groupsSubjectsTeachers.size()) {
 //            System.out.println("Stack size: " +stack.size());
   //          System.out.println("Blocks size: " +blocks.size());
-            return makeScheduleFromStack();
+            return createNewTimeTable();
         }
-        Slot followingBlock = followingBlock();
+        Slot nextSlot = nextSlot();
 
-        if (followingBlock.getGroup() != null && followingBlock.getSubject() != null && followingBlock.getTeacher() != null && followingBlock.getTypeLesson() != null)
-            return takingFollowingBlock(followingBlock);
+        if (nextSlot.getGroup() != null && nextSlot.getSubject() != null && nextSlot.getTeacher() != null && nextSlot.getTypeLesson() != null)
+            return processingNextSlot(nextSlot);
+
         else
             return null;
 
     }
 
-    private Slot followingBlock() {
+
+    private TimeTable createNewTimeTable() {
+        List<Slot> readySlots = new ArrayList<>();
+
+        for (SlotsAndConflicts itemOfScheduleAndDeleted : stack) {
+            readySlots.add(itemOfScheduleAndDeleted.getSlot());
+        }
+        return new TimeTable(readySlots);
+    }
+
+    private Slot nextSlot() {
         Slot result = null;
-        for (int i = 0; i < blocks.size(); i++) {
+        for (int i = 0; i < groupsSubjectsTeachers.size(); i++) {
             //create list of possible var for this block
-            List<Slot> possible = returnAllPosibleVar(blocks.get(i));
+            List<Slot> possible = returnAllPosibleVar(groupsSubjectsTeachers.get(i));
            // System.out.println(possible.size());
             if (possible.size() > 0) {
                // System.out.println(possible.size());
                 if (result == null || possible.size() < returnAllPosibleVar(result).size()) {
 
-                    result = blocks.get(i);
+                    result = groupsSubjectsTeachers.get(i);
                   //  System.out.println(result.getGroup()+" "+ result.getSubject()+" "+ result.getTeacher()+" "+ result.getTypeLesson());
                 }
             }
@@ -144,8 +155,8 @@ public class CSP {
         return possibleVarForBlock;
     }
 
-    private List<Slot> getAllPossibleWhereWhen(Slot sl) {
-        //System.out.println("here");
+    private List<Slot> getAllPossibleTimePlace(Slot sl) {
+
         List<Slot> possibleWW = new ArrayList<>();
         for (int j = 0; j < allVar.size(); j++) {
             if (allVar.get(j).getGroup().equals(sl.getGroup()) &&
@@ -159,86 +170,84 @@ public class CSP {
         return possibleWW;
     }
 
-    private Schedule takingFollowingBlock(Slot followingBlock) {
+    private TimeTable processingNextSlot(Slot nextSlot) {
 
-        for (Slot followingWhereWhen : getAllPossibleWhereWhen(followingBlock)) {
+        for (Slot nextPlaceTime : getAllPossibleTimePlace(nextSlot)) {
 
-            pushItemOfScheduleAndDeleted(followingBlock, followingWhereWhen);
-            Schedule result = computing();
+            findAllUseless(nextSlot, nextPlaceTime);
+            TimeTable result = makeCalculations();
             if (result != null) {
                 return result;
             } else {
-                popItemOfSceduleAndDeleted();
+                addNewToAllVar();
             }
         }
         return null;
     }
 
-    private void pushItemOfScheduleAndDeleted(Slot block, Slot whereWhen) {
+    private void findAllUseless(Slot currentSlot, Slot placeTime) {
 
-        Set<Slot> unnecessary = new HashSet<>();
+        Set<Slot> useless = new HashSet<>();
 
-        for (Slot whereWhen1 : getAllPossibleWhereWhen(block)) {
-            unnecessary.add(new Slot(block.getGroup(), block.getSubject(), block.getTeacher(), block.getTypeLesson(), whereWhen1.getPeriodTime(), whereWhen1.getRoom()));
+        for (Slot whereWhen1 : getAllPossibleTimePlace(currentSlot)) {
+            useless.add(new Slot(currentSlot.getGroup(), currentSlot.getSubject(), currentSlot.getTeacher(), currentSlot.getTypeLesson(), whereWhen1.getPeriodTime(), whereWhen1.getRoom()));
         }
-
-        for (Slot slot : blocks) {
-            addToUnnecessaryItemsIfIfExists(unnecessary, slot, whereWhen);
+        for (Slot slot : groupsSubjectsTeachers) {
+            pushUselessInCaseExists(useless, slot, placeTime);
         }
-
-        for (Slot slot : blocks) {
-            if (slot.getTeacher().equals(block.getTeacher())) {
-                addToUnnecessaryItemsIfTheSameTime(unnecessary, slot, whereWhen);
+        for (Slot slot : groupsSubjectsTeachers) {
+            if (slot.getTeacher().equals(currentSlot.getTeacher())) {
+                pushUselessInCaseRepeat(useless, slot, placeTime);
             }
         }
-
-        for (Slot slot : blocks) {
-            if (slot.getGroup().equals(block.getGroup()) &&
-                    (slot.getTypeLesson() == "L" || block.getTypeLesson() == "L" || !slot.getSubject().equals(block.getSubject()))) {
-                addToUnnecessaryItemsIfTheSameTime(unnecessary, slot, whereWhen);
+        for (Slot slot : groupsSubjectsTeachers) {
+            if (slot.getGroup().equals(currentSlot.getGroup()) &&
+                    (slot.getTypeLesson() == "L" || currentSlot.getTypeLesson() == "L" || !slot.getSubject().equals(currentSlot.getSubject()))) {
+                pushUselessInCaseRepeat(useless, slot, placeTime);
             }
         }
         ArrayList<Slot> copyAllVar = allVar;
-        for (Slot scheduleEntity : unnecessary) {
+        for (Slot timeTableVar : useless) {
             for (int i = 0; i < copyAllVar.size(); i++) {
                 Slot sl = copyAllVar.get(i);
-                if (sl.getGroup().equals(scheduleEntity.getGroup()) &&
-                        sl.getSubject().equals(scheduleEntity.getSubject()) &&
-                        sl.getTeacher().equals(scheduleEntity.getTeacher()) &&
-                        sl.getTypeLesson().equals(scheduleEntity.getTypeLesson()) &&
-                        sl.getPeriodTime().equals(scheduleEntity.getPeriodTime()) &&
-                sl.getRoom().equals((scheduleEntity.getRoom()))) {
+                if (sl.getGroup().equals(timeTableVar.getGroup()) &&
+                        sl.getSubject().equals(timeTableVar.getSubject()) &&
+                        sl.getTeacher().equals(timeTableVar.getTeacher()) &&
+                        sl.getTypeLesson().equals(timeTableVar.getTypeLesson()) &&
+                        sl.getPeriodTime().equals(timeTableVar.getPeriodTime()) &&
+                sl.getRoom().equals((timeTableVar.getRoom()))) {
                     allVar.remove(sl);
                 }
             }
         }
 
-        SlotsAndConflicts itemOfScheduleAndDeleted = new SlotsAndConflicts(new Slot(block.getGroup(), block.getSubject(), block.getTeacher(), block.getTypeLesson(), whereWhen.getPeriodTime(), whereWhen.getRoom()), unnecessary);
-        stack.push(itemOfScheduleAndDeleted);
+        SlotsAndConflicts varOfSlot = new SlotsAndConflicts(new Slot(currentSlot.getGroup(), currentSlot.getSubject(), currentSlot.getTeacher(), currentSlot.getTypeLesson(), placeTime.getPeriodTime(), placeTime.getRoom()), useless);
+        stack.push(varOfSlot);
     }
 
-    private void addToUnnecessaryItemsIfIfExists(Set<Slot> unnecessary, Slot block, Slot whereWhen) {
-        if (getAllPossibleWhereWhen(block).contains(whereWhen)) {
-            unnecessary.add(new Slot(block.getGroup(), block.getSubject(), block.getTeacher(), block.getTypeLesson(), whereWhen.getPeriodTime(), whereWhen.getRoom()));
+    private void pushUselessInCaseExists(Set<Slot> unnecessary, Slot slot, Slot placeTime) {
+        if (getAllPossibleTimePlace(slot).contains(placeTime)) {
+            unnecessary.add(new Slot(slot.getGroup(), slot.getSubject(), slot.getTeacher(), slot.getTypeLesson(), placeTime.getPeriodTime(), placeTime.getRoom()));
         }
 
     }
 
-    private void addToUnnecessaryItemsIfTheSameTime(Set<Slot> unnecessary, Slot block, Slot whereWhen) {
+    private void pushUselessInCaseRepeat(Set<Slot> unnecessary, Slot block, Slot whereWhen) {
 
-        for (Slot whereWhen1 : getAllPossibleWhereWhen(block)) {
+        for (Slot whereWhen1 : getAllPossibleTimePlace(block)) {
             if (whereWhen1.getPeriodTime().equals(whereWhen.getPeriodTime())) {
-                addToUnnecessaryItemsIfIfExists(unnecessary, block, whereWhen1);
+                pushUselessInCaseExists(unnecessary, block, whereWhen1);
             }
         }
     }
 
-    private void popItemOfSceduleAndDeleted() {
+    private void addNewToAllVar() {
         SlotsAndConflicts itemOfScheduleAndDeleted = stack.pop();
 
 //        for (Slot itemOfSchedule : itemOfScheduleAndDeleted.getConflicts()) {
 //            allVariants.get(itemOfSchedule.getBlock()).add(itemOfSchedule.getWhereWhen());
 //        }
+
         List<Slot> copyAllVar = allVar;
         for (Slot itemOfSchedule : itemOfScheduleAndDeleted.getConflicts()) {
             for (int i = 0; i < copyAllVar.size(); i++) {
@@ -253,15 +262,6 @@ public class CSP {
         }
     }
 
-
-    private Schedule makeScheduleFromStack() {
-        List<Slot> itemOfSchedules = new ArrayList<>();
-
-        for (SlotsAndConflicts itemOfScheduleAndDeleted : stack) {
-            itemOfSchedules.add(itemOfScheduleAndDeleted.getSlot());
-        }
-        return new Schedule(itemOfSchedules);
-    }
 
 
 }

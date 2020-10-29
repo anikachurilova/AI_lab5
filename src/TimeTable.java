@@ -3,38 +3,39 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Schedule {
+public class TimeTable {
 
-    private final List<Slot> itemsOfSchedule;
-    private final int errorsInSchedule;
+    private final List<Slot> readySlots;
+    private final int mistakes;
 
-    public Schedule(List<Slot> itemsOfSchedule) {
-        this.itemsOfSchedule = itemsOfSchedule;
-        this.errorsInSchedule = calcErrors();
+    public TimeTable(List<Slot> itemsOfSchedule) {
+        this.readySlots = itemsOfSchedule;
+        this.mistakes = findingMistakes();
+
     }
 
 
-    private int calcErrors() {
-        int result = 0;
-        for (Slot i1 : itemsOfSchedule) {
+    private int findingMistakes() {
+        int res= 0;
 
-            result += calcErrors(i1);
-            for (Slot i2 : itemsOfSchedule) {
-                if (i1 != i2) {
-                    result += calcErrors(i1, i2);
+        for (Slot slot1 : readySlots) {
+            res += findingMistakes(slot1);
+            for (Slot slot2 : readySlots) {
+                if (slot1 != slot2) {
+                    res += findingMistakes(slot1, slot2);
                 }
             }
         }
-        return result;
+        return res;
     }
 
-    private int calcErrors(Slot item) {
-        int result = 0;
-        result += calcGoodAudit(item);
-        return result;
+    private int findingMistakes(Slot item) {
+        int res = 0;
+        res += calcGoodAudit(item);
+        return res;
     }
 
-    private int calcErrors(Slot item1, Slot item2) {
+    private int findingMistakes(Slot item1, Slot item2) {
         int result = 0;
         if (overlapTime(item1, item2)) {
             result += calcOverlapAudit(item1, item2);
@@ -101,14 +102,14 @@ public class Schedule {
     public String toString() {
 
         List<Slot> sheduleEn = new ArrayList<>();
-        itemsOfSchedule.sort(Comparator.comparing(a -> a.getPeriodTime().getTime()));
+        readySlots.sort(Comparator.comparing(a -> a.getPeriodTime().getTime()));
        // itemsOfSchedule.sort(Comparator.comparing(a -> a.getWhereWhen().getStudyDay()));
         String answer = "";
-        for (Slot x : itemsOfSchedule) {
+        for (Slot x : readySlots) {
             sheduleEn.add(x);
             answer += x.getPeriodTime().getTime() +" " +x.getSubject().getName() + " " + x.getTypeLesson() +" "+ x.getTeacher().getName() + " "+ x.getGroup().getName() +" "+ x.getRoom().getNumber()+ ("\n");
 
         }
-        return answer + "                               Error amounts:"+ errorsInSchedule;
+        return answer + "                               Error amounts:"+ mistakes;
     }
 }

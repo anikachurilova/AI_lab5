@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class Output {
 
@@ -13,7 +12,7 @@ public class Output {
        ArrayList<StudentGroup> groupsFromInput = i.getGroups();
 
         CSP cspAlgorithm = new CSP(periodTimeFromInput,roomsFromInput,teachersFromInput,subjectsFromInput, groupsFromInput);
-        cspAlgorithm.startCSP();
+        cspAlgorithm.running();
 
     }
 
