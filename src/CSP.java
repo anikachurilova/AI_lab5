@@ -43,18 +43,26 @@ public class CSP {
             for (int j = 0; j < subjectsFromInput.size(); j++) {
                 if (groupsFromInput.get(i).getSubjects().contains(subjectsFromInput.get(j))) {
                     Subject sub = subjectsFromInput.get(j);
-                    for (int m = 0; m < teachersFromInput.size(); m++) {
-                        Teacher teach = teachersFromInput.get(m);
-                        if (sub.type =="L"  && sub.teacher.contains(teachersFromInput.get(m))) {
-                            //if (sub.teacher.get(0).equals(teach)) {
-                                result.add(new Slot(groupsFromInput.get(i), sub, teach, "L"));
-                            //} else {
-                             //   result.add(new Slot(groupsFromInput.get(i), sub, teach, "P"));
-                           // }
-                        }else if ( sub.type == "P" && sub.teacher.contains(teachersFromInput.get(m))){
-                            result.add(new Slot(groupsFromInput.get(i), sub, teach, "P"));
-                        }
+                    if(sub.type == "L"){
+                        result.add(new Slot(groupsFromInput.get(i), sub, sub.teacher.get(0), "L"));
+                    }else{
+                        int num = (int) ((Math.random()*(sub.teacher.size()-2)) + 1);
+                        Teacher t = sub.teacher.get(num);
+                        result.add(new Slot(groupsFromInput.get(i), sub, t, "P"));
                     }
+
+//                    for (int m = 0; m < teachersFromInput.size(); m++) {
+//                        Teacher teach = teachersFromInput.get(m);
+//                        if (sub.type =="L"  && sub.teacher.contains(teachersFromInput.get(m))) {
+//                            //if (sub.teacher.get(0).equals(teach)) {
+//                                result.add(new Slot(groupsFromInput.get(i), sub, teach, "L"));
+//                            //} else {
+//                             //   result.add(new Slot(groupsFromInput.get(i), sub, teach, "P"));
+//                           // }
+//                        }else if ( sub.type == "P" && sub.teacher.contains(teachersFromInput.get(m))){
+//                            result.add(new Slot(groupsFromInput.get(i), sub, teach, "P"));
+//                        }
+//                    }
                 }
             }
         }
