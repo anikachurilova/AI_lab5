@@ -9,15 +9,9 @@ periodTime
 MT_MN_1;Monday 10:00 - 11:00
 MT_MN_2;Monday 11:00 - 12:00
 MT_MN_3;Monday 12:00 - 13:00
-MT_MN_4;Monday 13:00 - 14:00
-MT_MN_5;Monday 14:00 - 15:00
-MT_MN_6;Monday 15:00 - 16:00
 MT_TU_1;Tuesday 10:00 - 11:00
 MT_TU_2;Tuesday 11:00 - 12:00
 MT_TU_3;Tuesday 12:00 - 13:00
-MT_TU_4;Tuesday 13:00 - 14:00
-MT_TU_5;Tuesday 14:00 - 15:00
-MT_TU_6;Tuesday 15:00 - 16:00
 MT_WD_1;Wednesday 10:00 - 11:00
 MT_WD_2;Wednesday 11:00 - 12:00
 MT_WD_3;Wednesday 12:00 - 13:00

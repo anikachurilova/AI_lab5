@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Slot {
     private int id;
     private StudentGroup group;
@@ -5,16 +7,53 @@ public class Slot {
     private Teacher teacher;
     private PeriodTime periodTime;
     private Room room;
-    public Slot(int id, StudentGroup group, Subject subject, Teacher teacher){
-        this.id = id;
+    private String typeLesson;
+   // private int[] numberGroup;
+
+    public Slot(PeriodTime periodTime, Room room) {
+        this.periodTime = periodTime;
+        this.room = room;
+    }
+
+    public Slot(StudentGroup group, Subject subject, Teacher teacher, String typeLesson){
+        //this.id = id;
         this.subject = subject;
         this.group = group;
         this.teacher = teacher;
+        this.typeLesson = typeLesson;
+     //   this.numberGroup = subject.getGroupsOfSubject();
     }
+
+    public Slot(StudentGroup group, Subject subject, Teacher teacher, String typeLesson, PeriodTime periodTime, Room room) {
+        this.group = group;
+        this.subject = subject;
+        this.teacher = teacher;
+        this.typeLesson = typeLesson;
+        this.periodTime = periodTime;
+        this.room = room;
+      //  this.numberGroup = subject.getGroupsOfSubject();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Slot slot = (Slot) o;
+        return id == slot.id &&
+                Objects.equals(group, slot.group) &&
+                Objects.equals(subject, slot.subject) &&
+                Objects.equals(teacher, slot.teacher) &&
+                Objects.equals(periodTime, slot.periodTime) &&
+                Objects.equals(room, slot.room) &&
+                Objects.equals(typeLesson, slot.typeLesson);
+    }
+
+
     public void setTeacher(Teacher teacher) { this.teacher = teacher; }
     public void setPeriodTime(PeriodTime periodTime) { this.periodTime = periodTime; }
     public void setRoom(Room room){ this.room = room; }
     public int getId() { return id; }
+    public String getTypeLesson(){ return typeLesson;}
     public StudentGroup getGroup() { return group; }
     public Subject getSubject() { return subject; }
     public Teacher getTeacher() { return teacher; }

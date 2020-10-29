@@ -3,13 +3,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Input {
-//    public static final int POPULATION_SIZE = 9;
-//    public static final double MUTATION_RATE = 0.1;
-//    public static final double CROSSOVER_RATE = 0.9;
-//    public static final int TOURNAMENT_SELECTION_SIZE = 3;
-//    public static final int NUMB_OF_ELITE_SCHEDULES = 1;
-//    private int scheduleNumb = 0;
-//    private int classNumb = 1;
+
 
 
     public static ArrayList<Room> rooms = new ArrayList<>();
@@ -18,24 +12,16 @@ public class Input {
     public static ArrayList<StudentGroup> groups =new ArrayList<>();
     public static ArrayList<PeriodTime> periodTimes =new ArrayList<>();
 
-//    public static void main(String[] args) {
-//        takeinput();
-//        System.out.println(rooms);
-//        System.out.println(subjects);
-//        System.out.println(teachers);
-//        System.out.println(groups);
-//        System.out.println(periodTimes);
-//    }
-
-
 
     public Input(){
+
         takeinput();
     }
-    public static void takeinput()// takes input from file input.txt
+
+    public static void takeinput()
     {
         try {
-            File file = new File("input.txt");
+            File file = new File("file.txt");
             Scanner scanner = new Scanner(file);
 
 

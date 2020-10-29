@@ -6,13 +6,22 @@ public class Subject {
     int id;
     String name;
     String type;
+ //   int[] groupsOfSubject;
     ArrayList<Teacher> teacher;
+
+//    public int[] getGroupsOfSubject() {
+//        return groupsOfSubject;
+//    }
 
     public Subject(int id, String name, String type, ArrayList<Teacher> teacher) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.teacher = teacher;
+//        this.groupsOfSubject = new int[quantityGroups];
+//        for(int i=1; i <= quantityGroups;i++){
+//            groupsOfSubject[i-1] = i;
+//        }
     }
 
 
