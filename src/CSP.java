@@ -31,9 +31,7 @@ public class CSP {
                 result.add(new Slot(periodTimeFromInput.get(i), roomsFromInput.get(j)));
             }
         }
-//        for(int i=0; i< result.size();i++){
-//            System.out.println(result.get(i).getPeriodTime() + " " + result.get(i).getRoom());
-//        }
+
         return result;
     }
 
@@ -51,25 +49,11 @@ public class CSP {
                         result.add(new Slot(groupsFromInput.get(i), sub, t, "P"));
                     }
 
-//                    for (int m = 0; m < teachersFromInput.size(); m++) {
-//                        Teacher teach = teachersFromInput.get(m);
-//                        if (sub.type =="L"  && sub.teacher.contains(teachersFromInput.get(m))) {
-//                            //if (sub.teacher.get(0).equals(teach)) {
-//                                result.add(new Slot(groupsFromInput.get(i), sub, teach, "L"));
-//                            //} else {
-//                             //   result.add(new Slot(groupsFromInput.get(i), sub, teach, "P"));
-//                           // }
-//                        }else if ( sub.type == "P" && sub.teacher.contains(teachersFromInput.get(m))){
-//                            result.add(new Slot(groupsFromInput.get(i), sub, teach, "P"));
-//                        }
-//                    }
                 }
             }
         }
 
-//        for(int i=0; i< result.size();i++){
-//            System.out.println(result.get(i).getGroup()+ " "+result.get(i).getSubject()+" "+  result.get(i).getTeacher() + " "+result.get(i).getTypeLesson());
-//        }
+
         return result;
     }
 
@@ -86,15 +70,11 @@ public class CSP {
                 result.add(new Slot(s.getGroup(), s.getSubject(), s.getTeacher(), s.getTypeLesson(), ww.getPeriodTime(), ww.getRoom()));
             }
         }
-//        for(int i=0; i< result.size();i++){
-//            System.out.println(result.get(i).getGroup()+ " "+result.get(i).getSubject()+" "+  result.get(i).getTeacher() + " "+result.get(i).getTypeLesson() +" "+ result.get(i).getPeriodTime()+result.get(i).getRoom());
-//        }
 
         return result;
     }
 
     public TimeTable running() {
-//System.out.println(stack.size());
         TimeTable timeTable = makeCalculations();
         if (timeTable == null) {
             System.out.println("There is no possible timetable:(");
@@ -106,8 +86,7 @@ public class CSP {
 
     private TimeTable makeCalculations() {
         if (stack.size() == groupsSubjectsTeachers.size()) {
-//            System.out.println("Stack size: " +stack.size());
-  //          System.out.println("Blocks size: " +blocks.size());
+
             return createNewTimeTable();
         }
         Slot nextSlot = nextSlot();
@@ -133,25 +112,19 @@ public class CSP {
     private Slot nextSlot() {
         Slot result = null;
         for (int i = 0; i < groupsSubjectsTeachers.size(); i++) {
-            //create list of possible var for this block
             List<Slot> possible = returnAllPosibleVar(groupsSubjectsTeachers.get(i));
-           // System.out.println(possible.size());
             if (possible.size() > 0) {
-               // System.out.println(possible.size());
                 if (result == null || possible.size() < returnAllPosibleVar(result).size()) {
 
                     result = groupsSubjectsTeachers.get(i);
-                  //  System.out.println(result.getGroup()+" "+ result.getSubject()+" "+ result.getTeacher()+" "+ result.getTypeLesson());
                 }
             }
         }
-      //  System.out.println(result);
 
         return result;
     }
 
     private List<Slot> returnAllPosibleVar(Slot sl) {
-       // System.out.println("AllVar size: "+allVar.size());
         List<Slot> possibleVarForBlock = new ArrayList<>();
         for (int j = 0; j < allVar.size(); j++) {
             if (allVar.get(j).getGroup().equals(sl.getGroup()) &&
@@ -175,7 +148,6 @@ public class CSP {
                 possibleWW.add(new Slot(allVar.get(j).getPeriodTime(), allVar.get(j).getRoom()));
             }
         }
-        //System.out.println("PossibleWWsize "+ possibleWW.size());
         return possibleWW;
     }
 
@@ -252,10 +224,6 @@ public class CSP {
 
     private void addNewToAllVar() {
         SlotsAndConflicts itemOfScheduleAndDeleted = stack.pop();
-
-//        for (Slot itemOfSchedule : itemOfScheduleAndDeleted.getConflicts()) {
-//            allVariants.get(itemOfSchedule.getBlock()).add(itemOfSchedule.getWhereWhen());
-//        }
 
         List<Slot> copyAllVar = allVar;
         for (Slot itemOfSchedule : itemOfScheduleAndDeleted.getConflicts()) {

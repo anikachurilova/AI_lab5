@@ -8,7 +8,6 @@ public class Slot {
     private PeriodTime periodTime;
     private Room room;
     private String typeLesson;
-   // private int[] numberGroup;
 
     public Slot(PeriodTime periodTime, Room room) {
         this.periodTime = periodTime;
@@ -16,12 +15,10 @@ public class Slot {
     }
 
     public Slot(StudentGroup group, Subject subject, Teacher teacher, String typeLesson){
-        //this.id = id;
         this.subject = subject;
         this.group = group;
         this.teacher = teacher;
         this.typeLesson = typeLesson;
-     //   this.numberGroup = subject.getGroupsOfSubject();
     }
 
     public Slot(StudentGroup group, Subject subject, Teacher teacher, String typeLesson, PeriodTime periodTime, Room room) {
@@ -31,7 +28,6 @@ public class Slot {
         this.typeLesson = typeLesson;
         this.periodTime = periodTime;
         this.room = room;
-      //  this.numberGroup = subject.getGroupsOfSubject();
     }
 
     @Override
